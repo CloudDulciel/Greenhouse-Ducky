@@ -175,7 +175,7 @@ nav{
   color:#fff;font-size:18px;z-index:10;
 }
 .modal-close:hover{background:rgba(255,255,255,0.3);}
-.modal-box video{width:100%;display:block;max-height:70vh;}
+.modal-box iframe{width:100%;display:block;height:360px;border:none;}
 
 /* CHECKOUT PAGE */
 .checkout-wrap{max-width:440px;margin:0 auto;padding:32px 0 60px;}
@@ -318,7 +318,7 @@ nav{
 <div class="modal-overlay" id="video-modal" onclick="closeModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="closeVideoModal()">✕</button>
-    <video id="modal-video" controls playsinline></video>
+    <iframe id="modal-iframe" allowfullscreen allow="autoplay"></iframe>
   </div>
 </div>
 
@@ -492,7 +492,7 @@ const CATALOG = {
         price: 49, usd: '1.99',
         img: 'img/emote56.png',
         driveUrl: 'https://drive.google.com/drive/folders/1EywVyehyvHG4Cp07_qS5nb6g_a81BTKB?usp=drive_link',
-        video: 'video/emote56.mp4',
+        videoId: '13LMc3sQdig5pJhNfk8l03LnSwtLn71nV',
       },
       {
         id: 'emote-60',
@@ -501,7 +501,7 @@ const CATALOG = {
         price: 49, usd: '1.99',
         img: 'img/emote60.png',
         driveUrl: 'https://drive.google.com/drive/folders/1PNxXcawSMDZMj3k1JvRfRvvtnoQlYBt1?usp=drive_link',
-        video: 'video/emote60.mp4',
+        videoId: '13IYIJ6Z-M5iO0Reb_p553pnKLvrtNRS3',
       },
       {
         id: 'emote-54',
@@ -510,7 +510,7 @@ const CATALOG = {
         price: 49, usd: '1.99',
         img: 'img/emote54.png',
         driveUrl: 'https://drive.google.com/drive/folders/1s3YDh_hCocqbCKGlUiLOiqLAO3ueWemL?usp=drive_link',
-        video: 'video/emote54.mp4',
+        videoId: '1dqZ5T7hZ7cN8yd8qX-BZEQjmAyly8knR',
       },
     ]
   },
@@ -543,8 +543,8 @@ function goProducts(cat) {
       <div class="prod-card" onclick="goCheckout('${item.id}','${cat}')">
         <div class="prod-thumb">
           <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'"/>
-          ${item.video ? `
-          <div class="prod-play-btn" onclick="playVideo(event,'${item.video}')">
+          ${item.videoId ? `
+          <div class="prod-play-btn" onclick="playVideo(event,'${item.videoId}')" >
             <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>` : ''}
         </div>
@@ -599,17 +599,16 @@ function goSuccess() {
   showPage('success');
 }
 
-function playVideo(e, src) {
+function playVideo(e, videoId) {
   e.stopPropagation();
-  const v = document.getElementById('modal-video');
-  v.src = src;
-  v.play();
+  const iframe = document.getElementById('modal-iframe');
+  iframe.src = 'https://drive.google.com/file/d/' + videoId + '/preview';
   document.getElementById('video-modal').classList.add('open');
 }
 
 function closeVideoModal() {
-  const v = document.getElementById('modal-video');
-  v.pause(); v.src = '';
+  const iframe = document.getElementById('modal-iframe');
+  iframe.src = '';
   document.getElementById('video-modal').classList.remove('open');
 }
 
