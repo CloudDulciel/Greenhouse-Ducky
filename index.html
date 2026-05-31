@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Greenhouse Ducky Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green-dark:#1e4d08;
+  --green-mid:#27500A;
+  --green-bright:#3B6D11;
+  --green-light:#EAF3DE;
+  --green-muted:#C0DD97;
+  --text:#1a1a1a;
+  --text-muted:#6b7280;
+  --text-hint:#9ca3af;
+  --bg:#ffffff;
+  --bg-surface:#f9fafb;
+  --bg-card:#ffffff;
+  --border:#e5e7eb;
+  --border-hover:#d1d5db;
+  --radius:12px;
+  --radius-sm:8px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{
+  font-family:'DM Serif Display',serif;
+  font-size:18px;color:var(--text);
+  text-decoration:none;cursor:pointer;
+}
+.logo span{color:var(--green-bright);}
+.nav-back{
+  display:none;align-items:center;gap:6px;
+  font-size:13px;color:var(--text-muted);
+  background:none;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-back:hover{color:var(--text);}
+.nav-back svg{width:16px;height:16px;}
+
+/* PAGE SYSTEM */
+.page{display:none;animation:fadeIn 0.2s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.container{max-width:720px;margin:0 auto;padding:0 24px;}
+
+/* HOME PAGE */
+.hero{padding:56px 0 40px;text-align:center;}
+.hero-eyebrow{
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--text-hint);margin-bottom:14px;
+}
+.hero-title{
+  font-family:'DM Serif Display',serif;
+  font-size:38px;line-height:1.15;
+  color:var(--text);margin-bottom:12px;letter-spacing:-0.5px;
+}
+.hero-sub{font-size:14px;color:var(--text-muted);line-height:1.6;}
+
+.cat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-top:40px;padding-bottom:60px;
+}
+.cat-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 16px 24px;
+  cursor:pointer;text-align:center;
+  transition:border-color 0.15s,transform 0.15s,box-shadow 0.15s;
+}
+.cat-card:hover{
+  border-color:var(--green-muted);
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(59,109,17,0.08);
+}
+.cat-icon{
+  width:52px;height:52px;border-radius:50%;
+  margin:0 auto 16px;
+  display:flex;align-items:center;justify-content:center;
+}
+.cat-icon.g{background:var(--green-light);}
+.cat-icon.t{background:#E1F5EE;}
+.cat-icon.a{background:#FAEEDA;}
+.cat-icon svg{width:24px;height:24px;}
+.cat-name{font-size:15px;font-weight:500;color:var(--text);margin-bottom:5px;}
+.cat-desc{font-size:12px;color:var(--text-muted);line-height:1.5;}
+.cat-arrow{margin-top:18px;color:var(--text-hint);font-size:18px;}
+
+/* PRODUCTS PAGE */
+.prod-header{padding:32px 0 20px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.prod-header-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);}
+.prod-header-sub{font-size:13px;color:var(--text-muted);margin-top:5px;}
+
+.prod-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;padding-bottom:60px;
+}
+.prod-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;
+  transition:border-color 0.15s,transform 0.15s,box-shadow 0.15s;
+}
+.prod-card:hover{
+  border-color:var(--green-muted);
+  transform:translateY(-2px);
+  box-shadow:0 4px 16px rgba(59,109,17,0.08);
+}
+.prod-thumb{
+  width:100%;aspect-ratio:16/10;
+  background:var(--bg-surface);
+  overflow:hidden;position:relative;
+}
+.prod-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.prod-play-btn{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.25);
+  opacity:0;transition:opacity 0.15s;
+}
+.prod-card:hover .prod-play-btn{opacity:1;}
+.prod-play-btn svg{width:36px;height:36px;fill:white;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));}
+.prod-info{padding:14px 16px 16px;}
+.prod-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.prod-meta{font-size:12px;color:var(--text-muted);margin-bottom:10px;}
+.prod-footer{display:flex;align-items:center;justify-content:space-between;}
+.prod-price{font-size:15px;font-weight:500;color:var(--text);}
+.prod-usd{font-size:11px;color:var(--text-hint);margin-top:1px;}
+.prod-btn{
+  font-size:12px;font-family:'DM Sans',sans-serif;
+  background:var(--green-light);color:var(--green-mid);
+  border:none;border-radius:var(--radius-sm);
+  padding:7px 14px;cursor:pointer;font-weight:500;
+  transition:background 0.15s;
+}
+.prod-btn:hover{background:var(--green-muted);}
+
+/* VIDEO MODAL */
+.modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);z-index:200;
+  align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:#000;border-radius:var(--radius);
+  overflow:hidden;max-width:600px;width:100%;
+  position:relative;
+}
+.modal-close{
+  position:absolute;top:12px;right:12px;
+  background:rgba(255,255,255,0.15);
+  border:none;border-radius:50%;
+  width:32px;height:32px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:18px;z-index:10;
+}
+.modal-close:hover{background:rgba(255,255,255,0.3);}
+.modal-box video{width:100%;display:block;max-height:70vh;}
+
+/* CHECKOUT PAGE */
+.checkout-wrap{max-width:440px;margin:0 auto;padding:32px 0 60px;}
+.checkout-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);margin-bottom:24px;}
+
+.order-card{
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:16px;margin-bottom:24px;
+  display:flex;gap:14px;align-items:flex-start;
+}
+.order-thumb{
+  width:68px;height:68px;border-radius:var(--radius-sm);
+  overflow:hidden;flex-shrink:0;
+  background:var(--bg-surface);border:1px solid var(--border);
+}
+.order-thumb img{width:100%;height:100%;object-fit:cover;}
+.order-info{flex:1;}
+.order-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px;}
+.order-meta{font-size:12px;color:var(--text-muted);}
+.order-price-col{text-align:right;}
+.order-price{font-size:16px;font-weight:500;color:var(--text);}
+.order-usd{font-size:11px;color:var(--text-hint);}
+
+.section-label{font-size:12px;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.04em;}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.pay-opt{
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:14px 12px;cursor:pointer;text-align:center;
+  background:var(--bg-card);transition:border-color 0.15s,background 0.15s;
+}
+.pay-opt:hover{border-color:var(--green-muted);}
+.pay-opt.selected{border-color:var(--green-bright);background:var(--green-light);}
+.pay-opt-icon{font-size:22px;margin-bottom:6px;}
+.pay-opt-name{font-size:13px;font-weight:500;color:var(--text);}
+.pay-opt-sub{font-size:11px;color:var(--text-muted);}
+
+.total-row{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--border);
+  padding-top:16px;margin-bottom:18px;
+}
+.total-label{font-size:13px;color:var(--text-muted);}
+.total-amount{font-size:22px;font-weight:500;color:var(--text);}
+
+.btn-primary{
+  width:100%;padding:14px;
+  background:var(--green-mid);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;
+  cursor:pointer;transition:background 0.15s;
+}
+.btn-primary:hover{background:var(--green-bright);}
+
+/* QR STEP */
+.qr-step{display:none;text-align:center;padding-top:8px;}
+.qr-label{font-size:13px;color:var(--text-muted);margin-bottom:6px;}
+.qr-amount{font-size:26px;font-weight:500;color:var(--text);margin-bottom:20px;}
+.qr-box{
+  width:160px;height:160px;margin:0 auto 16px;
+  background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;
+}
+.qr-hint{font-size:12px;color:var(--text-hint);margin-bottom:24px;}
+.qr-note{
+  background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 16px;
+  font-size:12px;color:var(--text-muted);line-height:1.6;
+  text-align:left;margin-bottom:20px;
+}
+
+/* SUCCESS PAGE */
+.success-wrap{text-align:center;padding:56px 0;}
+.success-icon{
+  width:60px;height:60px;border-radius:50%;
+  background:var(--green-light);margin:0 auto 20px;
+  display:flex;align-items:center;justify-content:center;
+}
+.success-icon svg{width:28px;height:28px;stroke:var(--green-mid);stroke-width:2.5;fill:none;}
+.success-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:10px;}
+.success-sub{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:32px;}
+
+.dl-card{
+  background:var(--bg-surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px 20px;
+  display:flex;align-items:center;gap:14px;
+  text-decoration:none;color:inherit;
+  transition:border-color 0.15s,background 0.15s;
+  margin-bottom:10px;
+}
+.dl-card:hover{border-color:var(--green-muted);background:var(--bg-card);}
+.dl-icon{
+  width:44px;height:44px;border-radius:var(--radius-sm);
+  background:var(--green-light);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.dl-icon svg{width:22px;height:22px;}
+.dl-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.dl-sub{font-size:12px;color:var(--text-muted);}
+.dl-arrow{margin-left:auto;color:var(--text-hint);}
+.dl-arrow svg{width:18px;height:18px;}
+
+.notice{
+  margin-top:16px;padding:12px 16px;
+  background:#fff8ed;border:1px solid #fde8b4;
+  border-radius:var(--radius-sm);
+  font-size:12px;color:#92400e;line-height:1.6;
+  text-align:left;
+}
+
+.btn-ghost{
+  width:100%;padding:12px;margin-top:16px;
+  background:none;color:var(--text-muted);
+  border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  cursor:pointer;transition:background 0.15s,color 0.15s;
+}
+.btn-ghost:hover{background:var(--bg-surface);color:var(--text);}
+
+@media(max-width:600px){
+  .cat-grid{grid-template-columns:1fr;}
+  .hero-title{font-size:28px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="goHome()">Greenhouse<span>Ducky</span></div>
+  <button class="nav-back" id="nav-back" onclick="goBack()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    กลับ
+  </button>
+</nav>
+
+<!-- VIDEO MODAL -->
+<div class="modal-overlay" id="video-modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeVideoModal()">✕</button>
+    <video id="modal-video" controls playsinline></video>
+  </div>
+</div>
+
+<!-- PAGE: HOME -->
+<div class="page active" id="page-home">
+  <div class="container">
+    <div class="hero">
+      <div class="hero-eyebrow">Minecraft Add-ons · Greenhouse Ducky</div>
+      <div class="hero-title">เลือกสิ่งที่<br/>อยากได้</div>
+      <div class="hero-sub">สินค้าคุณภาพ ดาวน์โหลดได้ทันทีหลังชำระเงิน</div>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="goProducts('emote')">
+        <div class="cat-icon g">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#27500A" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="cat-name">Emote Set</div>
+        <div class="cat-desc">ท่าทาง animation<br/>สุดน่ารัก 3 ท่า / set</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card" onclick="goProducts('figura')">
+        <div class="cat-icon t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="cat-name">Figura</div>
+        <div class="cat-desc">สกิน Figura<br/>แบบ custom</div>
+        <div class="cat-arrow">→</div>
+      </div>
+      <div class="cat-card" onclick="goProducts('figura-set')">
+        <div class="cat-icon a">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="cat-name">Figura Set</div>
+        <div class="cat-desc">bundle สกิน<br/>ราคาพิเศษ</div>
+        <div class="cat-arrow">→</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: PRODUCTS -->
+<div class="page" id="page-products">
+  <div class="container">
+    <div class="prod-header">
+      <div class="prod-header-title" id="prod-title">Emote Set</div>
+      <div class="prod-header-sub" id="prod-sub">เลือกรายการที่ต้องการ</div>
+    </div>
+    <div class="prod-grid" id="prod-grid"></div>
+  </div>
+</div>
+
+<!-- PAGE: CHECKOUT -->
+<div class="page" id="page-checkout">
+  <div class="container">
+    <div class="checkout-wrap">
+      <div class="checkout-title">ชำระเงิน</div>
+      <div class="order-card">
+        <div class="order-thumb"><img id="order-img" src="" alt=""/></div>
+        <div class="order-info">
+          <div class="order-name" id="order-name">-</div>
+          <div class="order-meta" id="order-meta">-</div>
+        </div>
+        <div class="order-price-col">
+          <div class="order-price" id="order-price">-</div>
+          <div class="order-usd" id="order-usd">-</div>
+        </div>
+      </div>
+
+      <div id="step-pay">
+        <div class="section-label">เลือกวิธีชำระเงิน</div>
+        <div class="pay-grid">
+          <div class="pay-opt selected" id="opt-promptpay" onclick="selectPay('promptpay')">
+            <div class="pay-opt-icon">&#x1F4F1;</div>
+            <div class="pay-opt-name">PromptPay</div>
+            <div class="pay-opt-sub">QR Code</div>
+          </div>
+          <div class="pay-opt" id="opt-truemoney" onclick="selectPay('truemoney')">
+            <div class="pay-opt-icon">&#x1F4B3;</div>
+            <div class="pay-opt-name">TrueMoney</div>
+            <div class="pay-opt-sub">Wallet</div>
+          </div>
+        </div>
+        <div class="total-row">
+          <span class="total-label">ยอดชำระ</span>
+          <span class="total-amount" id="total-amount">฿49</span>
+        </div>
+        <button class="btn-primary" onclick="showQR()">ดำเนินการชำระเงิน</button>
+      </div>
+
+      <div class="qr-step" id="step-qr">
+        <div class="qr-label">สแกน QR เพื่อชำระเงิน</div>
+        <div class="qr-amount" id="qr-amount">฿49</div>
+        <div class="qr-box">
+          <svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="5" width="42" height="42" rx="3" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+            <rect x="14" y="14" width="24" height="24" rx="1" fill="#1a1a1a"/>
+            <rect x="63" y="5" width="42" height="42" rx="3" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+            <rect x="72" y="14" width="24" height="24" rx="1" fill="#1a1a1a"/>
+            <rect x="5" y="63" width="42" height="42" rx="3" fill="none" stroke="#1a1a1a" stroke-width="4"/>
+            <rect x="14" y="72" width="24" height="24" rx="1" fill="#1a1a1a"/>
+            <rect x="63" y="63" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="74" y="63" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="85" y="63" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="96" y="63" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="63" y="74" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="85" y="74" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="63" y="85" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="74" y="85" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="96" y="85" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="63" y="96" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="85" y="96" width="7" height="7" fill="#1a1a1a"/>
+            <rect x="96" y="96" width="7" height="7" fill="#1a1a1a"/>
+          </svg>
+        </div>
+        <div class="qr-hint">QR หมดอายุใน 15 นาที · ชำระได้ผ่านทุกธนาคาร</div>
+        <div class="qr-note">
+          หลังชำระเงินสำเร็จ ระบบจะพากลับหน้าดาวน์โหลดอัตโนมัติ<br/>
+          และส่งลิงก์ไปยังอีเมลของท่านด้วย
+        </div>
+        <button class="btn-primary" onclick="goSuccess()">&#10003; จำลอง: ชำระเงินสำเร็จ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: SUCCESS -->
+<div class="page" id="page-success">
+  <div class="container" style="max-width:480px;">
+    <div class="success-wrap">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="success-title">ชำระเงินสำเร็จ</div>
+      <div class="success-sub">ขอบคุณที่สั่งซื้อนะครับ!<br/>กดดาวน์โหลดไฟล์ได้เลยด้านล่าง</div>
+
+      <a class="dl-card" id="dl-link" href="#" target="_blank" rel="noopener">
+        <div class="dl-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#27500A" stroke-width="2" width="22" height="22">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3-8.59A2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="dl-name" id="dl-name">ดาวน์โหลดไฟล์จาก Google Drive</div>
+          <div class="dl-sub">คลิกเพื่อเปิด Google Drive</div>
+        </div>
+        <div class="dl-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </div>
+      </a>
+
+      <div class="notice">
+        &#x26A0; ไม่อนุญาตให้นำไปขายต่อหรือส่งต่อ<br/>
+        สินค้านี้ใช้สำหรับบัญชีของท่านเท่านั้น
+      </div>
+
+      <button class="btn-ghost" onclick="goHome()">กลับหน้าหลัก</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATALOG = {
+  emote: {
+    title: 'Emote Set',
+    sub: 'ท่าทาง animation สุดน่ารัก · 3 ท่า / set · Figura ส่วนหัวไม่หลุด',
+    items: [
+      {
+        id: 'emote-56',
+        name: 'Emote Set 56',
+        meta: 'Emote Set · 3 ท่า · Figura ส่วนหัวไม่หลุด',
+        price: 49, usd: '1.99',
+        img: 'img/emote56.png',
+        driveUrl: 'https://drive.google.com/drive/folders/1EywVyehyvHG4Cp07_qS5nb6g_a81BTKB?usp=drive_link',
+        video: 'video/emote56.mp4',
+      },
+      {
+        id: 'emote-60',
+        name: 'Emote Set 60',
+        meta: 'Emote Set · 3 ท่า · Figura ส่วนหัวไม่หลุด',
+        price: 49, usd: '1.99',
+        img: 'img/emote60.png',
+        driveUrl: 'https://drive.google.com/drive/folders/1PNxXcawSMDZMj3k1JvRfRvvtnoQlYBt1?usp=drive_link',
+        video: 'video/emote60.mp4',
+      },
+      {
+        id: 'emote-54',
+        name: 'Emote Set 54',
+        meta: 'Emote Set · 3 ท่า · Figura ส่วนหัวไม่หลุด',
+        price: 49, usd: '1.99',
+        img: 'img/emote54.png',
+        driveUrl: 'https://drive.google.com/drive/folders/1s3YDh_hCocqbCKGlUiLOiqLAO3ueWemL?usp=drive_link',
+        video: 'video/emote54.mp4',
+      },
+    ]
+  },
+  figura: {
+    title: 'Figura',
+    sub: 'สกิน Figura แบบ custom',
+    items: []
+  },
+  'figura-set': {
+    title: 'Figura Set',
+    sub: 'bundle สกิน ราคาพิเศษ',
+    items: []
+  }
+};
+
+let history = ['home'];
+let selectedItem = null;
+let selectedPay = 'promptpay';
+
+function goProducts(cat) {
+  const data = CATALOG[cat];
+  document.getElementById('prod-title').textContent = data.title;
+  document.getElementById('prod-sub').textContent = data.sub;
+
+  const grid = document.getElementById('prod-grid');
+  if (!data.items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;color:#9ca3af;font-size:14px;">ยังไม่มีสินค้า — เร็วๆ นี้!</div>';
+  } else {
+    grid.innerHTML = data.items.map(item => `
+      <div class="prod-card" onclick="goCheckout('${item.id}','${cat}')">
+        <div class="prod-thumb">
+          <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'"/>
+          ${item.video ? `
+          <div class="prod-play-btn" onclick="playVideo(event,'${item.video}')">
+            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>` : ''}
+        </div>
+        <div class="prod-info">
+          <div class="prod-name">${item.name}</div>
+          <div class="prod-meta">${item.meta}</div>
+          <div class="prod-footer">
+            <div>
+              <div class="prod-price">฿${item.price}</div>
+              <div class="prod-usd">$${item.usd}</div>
+            </div>
+            <button class="prod-btn">เลือก</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  showPage('products');
+}
+
+function goCheckout(itemId, cat) {
+  const item = CATALOG[cat].items.find(i => i.id === itemId);
+  selectedItem = item;
+  document.getElementById('order-img').src = item.img;
+  document.getElementById('order-name').textContent = item.name;
+  document.getElementById('order-meta').textContent = item.meta;
+  document.getElementById('order-price').textContent = '฿' + item.price;
+  document.getElementById('order-usd').textContent = '$' + item.usd;
+  document.getElementById('total-amount').textContent = '฿' + item.price;
+  document.getElementById('qr-amount').textContent = '฿' + item.price;
+  document.getElementById('step-pay').style.display = '';
+  document.getElementById('step-qr').style.display = 'none';
+  showPage('checkout');
+}
+
+function selectPay(method) {
+  selectedPay = method;
+  document.querySelectorAll('.pay-opt').forEach(el => el.classList.remove('selected'));
+  document.getElementById('opt-' + method).classList.add('selected');
+}
+
+function showQR() {
+  document.getElementById('step-pay').style.display = 'none';
+  document.getElementById('step-qr').style.display = 'block';
+}
+
+function goSuccess() {
+  if (selectedItem) {
+    document.getElementById('dl-name').textContent = selectedItem.name + ' — Google Drive';
+    document.getElementById('dl-link').href = selectedItem.driveUrl;
+  }
+  showPage('success');
+}
+
+function playVideo(e, src) {
+  e.stopPropagation();
+  const v = document.getElementById('modal-video');
+  v.src = src;
+  v.play();
+  document.getElementById('video-modal').classList.add('open');
+}
+
+function closeVideoModal() {
+  const v = document.getElementById('modal-video');
+  v.pause(); v.src = '';
+  document.getElementById('video-modal').classList.remove('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('video-modal')) closeVideoModal();
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (history[history.length-1] !== name) history.push(name);
+  document.getElementById('nav-back').style.display = history.length > 1 ? 'flex' : 'none';
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  if (history.length > 1) {
+    history.pop();
+    const prev = history[history.length-1];
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + prev).classList.add('active');
+    document.getElementById('nav-back').style.display = history.length > 1 ? 'flex' : 'none';
+    window.scrollTo(0, 0);
+  }
+}
+
+function goHome() {
+  history = ['home'];
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-home').classList.add('active');
+  document.getElementById('nav-back').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
